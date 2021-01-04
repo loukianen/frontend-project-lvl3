@@ -10,7 +10,10 @@ import renderChanges from './view';
 
 const getRssData = (url) => axios
   .get(`https://api.allorigins.win/get?charset=UTF-8&url=${url}`)
-  .then((response) => response.data.contents);
+  .then((response) => response.data.contents)
+  .catch((e) => {
+    throw(new Error('Parsing_data_error'));
+  });
 
 const checkIfUrlExist = (data) => {
   const existLinks = data.feeds.length > 0 ? data.feeds.map((feed) => feed.url) : [];
