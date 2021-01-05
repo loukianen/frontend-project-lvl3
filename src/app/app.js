@@ -5,14 +5,14 @@ import i18next from 'i18next';
 import onChange from 'on-change';
 import { string } from 'yup';
 import resources from './locale';
-import makeNewData from './makeNewData';
+import { makeNewData, getPosts } from './makeNewData';
 import renderChanges from './view';
 
 const getRssData = (url) => axios
   .get(`https://api.allorigins.win/get?charset=UTF-8&url=${url}`)
   .then((response) => response.data.contents)
-  .catch((e) => {
-    throw(new Error('Parsing_data_error'));
+  .catch(() => {
+    throw new Error('Parsing_data_error');
   });
 
 const checkIfUrlExist = (data) => {
@@ -26,22 +26,32 @@ const validate = (data) => {
     .then((isValid) => (isValid ? checkIfUrlExist(data) : new Error('Url_invalid')));
 };
 
-export default () => {
-  let lang;
-  switch (window.navigator.language) {
+const setLanguage = (language = window.navigator.language) => {
+  switch (language) {
     case 'ru':
-      lang = 'ru';
-      break;
+      return 'ru';
     default:
-      lang = 'en';
+      return 'en';
   }
-  // You can connect cupport russian language 'i18next.init({ lng: lang })
+};
 
+const applyUi = () => {
+  const leadElement = document.querySelector('.lead');
+  const addButton = document.querySelector('button[aria-label="add"]');
+  const exampleElement = document.getElementById('example');
+  leadElement.textContent = i18next.t('ui.lead');
+  addButton.textContent = i18next.t('ui.add');
+  exampleElement.textContent = i18next.t('ui.example');
+};
+
+export default () => {
   i18next.init({
-    lng: lang,
+    lng: setLanguage(), // You can set language: setLanguage('ru')). Default - locale.
     debug: true,
     resources,
   });
+
+  applyUi();
 
   const stateLayout = {
     currentUrl: '',
@@ -57,22 +67,45 @@ export default () => {
   const state = onChange(stateLayout, renderChanges, { ignoreKeys: ['currentUrl', 'validation', 'refresher'] });
 
   const refreshData = (data) => {
+    const curState = data;
     const iter = () => {
-      const refreshPromises = data.feeds.map((feed) => {
+      const refreshPromises = curState.feeds.map((feed) => {
         const { url } = feed;
-        const promise = getRssData(url).then((rssData) => {
-          const newData = makeNewData(rssData, state);
-          if (newData instanceof Error) {
-            throw newData;
-          }
-          state.feeds = newData.feeds;
-          state.posts = newData.posts;
-        });
+        const promise = getRssData(url)
+          .then((rssData) => getPosts(rssData))
+          .catch();
         return promise;
       });
-      Promise.all(refreshPromises).then(() => {
+      const newPosts = [];
+      let postsWithoutId = [];
+      Promise.all(refreshPromises).then((promisesPesolve) => {
+        promisesPesolve.forEach((list, index) => {
+          let curList = list;
+          const feedId = curState.feeds[index].id;
+          const curPostsbyFeedId = curState.posts.filter((post) => post.feedId === feedId);
+          curPostsbyFeedId.forEach((post) => {
+            const newList = [];
+            curList.forEach((item) => {
+              if (item.title === post.title) {
+                newPosts.push(post);
+              } else {
+                const itemWithFeedId = { ...item, feedId };
+                newList.push(itemWithFeedId);
+              }
+            });
+            curList = newList;
+          });
+          postsWithoutId = [...postsWithoutId, ...curList];
+        });
+        let lastId = Math.max(...newPosts.map((el) => el.id));
+        postsWithoutId.forEach((post) => {
+          const curId = lastId + 1;
+          newPosts.push({ ...post, id: curId, readState: 'notRead' });
+          lastId = curId;
+        });
+        curState.posts = newPosts;
         setTimeout(iter, 5000);
-      });
+      }).catch();
     };
     if (state.refresher === 'notStarted') {
       state.refresher = 'started';

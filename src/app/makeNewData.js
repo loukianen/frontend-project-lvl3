@@ -1,4 +1,4 @@
-const getId = (titleName, list) => {
+export const getId = (titleName, list) => {
   if (list.length === 0) {
     return { id: 1, existation: 'new' };
   }
@@ -71,7 +71,15 @@ const makeNewDataForState = (newData, oldData) => {
   return { feeds, posts };
 };
 
-export default (rssData, state) => {
+export const getPosts = (rssData) => {
+  const parsedRssData = parsingRss(rssData);
+  if (parsedRssData instanceof Error) {
+    return parsedRssData;
+  }
+  return parsedRssData.posts;
+};
+
+export const makeNewData = (rssData, state) => {
   const parsedRssData = parsingRss(rssData);
   if (parsedRssData instanceof Error) {
     return parsedRssData;

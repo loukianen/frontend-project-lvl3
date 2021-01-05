@@ -12,6 +12,9 @@ export default {
       feeds: 'Каналы',
       posts: 'Статьи',
       previewButtonLable: 'Предпросмотр',
+      add: 'Добавить',
+      lead: 'Начните читать RSS сегодня! Это просто, это удобно.',
+      example: 'Например: https://ru.hexlet.io/lessons.rss',
     },
   },
 };
