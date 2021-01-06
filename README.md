@@ -9,4 +9,4 @@ This repository is created and maintained by Konstantin Lukyanenok as an educati
 [![Node.js CI](https://github.com/loukianen/frontend-project-lvl3/workflows/Node.js%20CI/badge.svg)](https://github.com/loukianen/frontend-project-lvl3/actions)
 
 ## URL
-https://frontend-project-lvl3-f6okuz6of.vercel.app/
+https://frontend-project-lvl3-osdz6kulw.vercel.app/
