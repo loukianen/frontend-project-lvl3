@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.1",
   "description": "education project RSS reader",
-  "main": "./index.js",
+  "main": "scr/index.js",
   "scripts": {
     "watch": "webpack --watch",
     "build": "webpack --config prod.webpack.config.js",
