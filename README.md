@@ -1,3 +1,6 @@
+#
+RSS-aggregator
+
 ##
 This repository is created and maintained by Konstantin Lukyanenok as an educational project "RSS-aggregator" of Hexlet. Promises were used, because (async/await) are prohibited by the terms of the project.
 
