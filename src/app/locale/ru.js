@@ -15,6 +15,8 @@ export default {
       add: 'Добавить',
       lead: 'Начните читать RSS сегодня! Это просто, это удобно.',
       example: 'Например: https://ru.hexlet.io/lessons.rss',
+      fullArticle: 'Статья полностью',
+      close: 'Закрыть',
     },
   },
 };

@@ -3,13 +3,11 @@ import $ from 'jquery';
 import 'bootstrap/js/dist/modal';
 
 const showModal = ({ title, description, link }) => {
-  const modal = document.getElementById('modal');
-  const modalTitle = modal.querySelector('.modal-title');
-  const modalBody = modal.querySelector('.modal-body');
-  const linkToFullArticle = modal.querySelector('.full-article');
-  modalTitle.textContent = title;
-  modalBody.textContent = description;
-  linkToFullArticle.setAttribute('href', link);
+  $('.modal-title').text(title);
+  $('.modal-body').text(description);
+  $('.full-article').attr('href', link);
+  $('#fullArticle').text(i18next.t('ui.fullArticle'));
+  $('#closeModal').text(i18next.t('ui.close'));
   $('#modal').modal();
 };
 
@@ -77,7 +75,9 @@ const renderPosts = (data) => {
     const linkFont = post.readState === 'read' ? 'font-weight-normal' : 'font-weight-bold';
     const content = `<div class="card-body d-flex justify-content-between">
       <a href="${post.link}" class="card-link ${linkFont}" target="_blank">${post.title}</a>
-      <button type="button" class="btn btn-primary" data-toggle="modal data-target="#modal">${i18next.t('ui.previewButtonLable')}</button></div>`;
+      <div class="d-flex">
+        <button type="button" class="btn btn-primary align-self-end" data-toggle="modal data-target="#modal">${i18next.t('ui.previewButtonLable')}</button>
+      </div></div>`;
     postCard.innerHTML = content;
     const button = postCard.querySelector('button');
     button.addEventListener('click', (event) => {
