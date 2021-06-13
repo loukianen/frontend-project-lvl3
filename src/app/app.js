@@ -64,7 +64,11 @@ export default () => {
     posts: [],
   };
 
-  const state = onChange(stateLayout, renderChanges, { ignoreKeys: ['currentUrl', 'validation', 'refresher'] });
+  const state = onChange(
+    stateLayout,
+    renderChanges,
+    { ignoreKeys: ['currentUrl', 'validation', 'refresher'] },
+  );
 
   const refreshData = (data) => {
     const curState = data;
@@ -131,12 +135,9 @@ export default () => {
       })
       .then(() => getRssData(state.currentUrl))
       .then((rssData) => {
-        const newData = makeNewData(rssData, state);
-        if (newData instanceof Error) {
-          throw newData;
-        }
-        state.feeds = newData.feeds;
-        state.posts = newData.posts;
+        const { feeds, posts } = makeNewData(rssData, state);
+        state.feeds = feeds;
+        state.posts = posts;
         state.process = 'processed';
         form.querySelector('input').value = '';
         refreshData(state);

@@ -48,13 +48,13 @@ const parsingRss = (data) => {
   const parsedRss = parser.parseFromString(data, 'text/xml');
   const channelNode = parsedRss.querySelector('channel');
   if (!channelNode || channelNode === null) {
-    return new Error('Parsing_data_error');
+    throw new Error('Parsing_data_error');
   }
   const feed = getProperties(channelNode);
 
   const itemNodes = Array.from(parsedRss.querySelectorAll('item'));
   if (itemNodes.length === 0) {
-    return new Error('Parsing_data_error');
+    throw new Error('Parsing_data_error');
   }
   const posts = itemNodes.map((node) => getProperties(node));
   return { feed, posts };
@@ -73,18 +73,11 @@ const makeNewDataForState = (newData, oldData) => {
 
 export const getPosts = (rssData) => {
   const parsedRssData = parsingRss(rssData);
-  if (parsedRssData instanceof Error) {
-    return parsedRssData;
-  }
   return parsedRssData.posts;
 };
 
 export const makeNewData = (rssData, state) => {
-  const parsedRssData = parsingRss(rssData);
-  if (parsedRssData instanceof Error) {
-    return parsedRssData;
-  }
-  const { feed, posts } = parsedRssData;
+  const { feed, posts } = parsingRss(rssData);
   const dataWithId = addId(feed, posts, state);
   const newDataForState = makeNewDataForState(dataWithId, state);
   return newDataForState;

@@ -35,13 +35,19 @@ const getFeedback = (processState) => {
 
 const renderFeedback = (state) => {
   const inputElement = document.querySelector('input');
+
   inputElement.classList.remove('is-invalid', 'is-valid');
+
   const validityClass = state.validation.url === 'valid' ? 'is-valid' : 'is-invalid';
   inputElement.classList.add(validityClass);
+
   const feedBackElement = document.querySelector('.feedback');
+
   feedBackElement.classList.remove('text-success', 'text-danger');
+
   const feedBackColor = state.validation.url === 'valid' ? 'text-success' : 'text-danger';
   feedBackElement.classList.add(feedBackColor);
+
   feedBackElement.textContent = getFeedback(state.process);
 };
 
@@ -76,7 +82,9 @@ const renderPosts = (data) => {
     const content = `<div class="card-body d-flex justify-content-between">
       <a href="${post.link}" class="card-link ${linkFont}" target="_blank">${post.title}</a>
       <div class="d-flex">
-        <button type="button" class="btn btn-primary align-self-end" data-toggle="modal data-target="#modal">${i18next.t('ui.previewButtonLable')}</button>
+        <button type="button" class="btn btn-primary align-self-end" data-toggle="modal data-target="#modal">
+          ${i18next.t('ui.previewButtonLable')}
+        </button>
       </div></div>`;
     postCard.innerHTML = content;
     const button = postCard.querySelector('button');
